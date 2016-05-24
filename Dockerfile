@@ -1,16 +1,19 @@
-FROM ubuntu:14.04
+FROM ubuntu:16.04
 MAINTAINER Daniel Rodriguez
+MAINTAINER Quentin Laporte-Chabasse (for the updates)
 
 RUN apt-get -y update && apt-get install -y \
     unzip \
     curl \
-    openjdk-7-jre-headless \
+    default-jre \
     xvfb \
     fonts-ipafont-gothic \
     xfonts-100dpi \
     xfonts-75dpi \
     xfonts-scalable \
-    xfonts-cyrillic
+    xfonts-cyrillic \
+    python3-pip \
+    git
 
 # Install Chrome
 RUN curl https://dl-ssl.google.com/linux/linux_signing_key.pub -o /tmp/google.pub
@@ -32,8 +35,18 @@ RUN curl http://selenium-release.storage.googleapis.com/2.48/selenium-server-sta
 RUN curl http://chromedriver.storage.googleapis.com/2.20/chromedriver_linux64.zip -o /opt/selenium/chromedriver_linux64.zip
 RUN cd /opt/selenium; unzip /opt/selenium/chromedriver_linux64.zip; rm -rf chromedriver_linux64.zip;
 
+# Python dependencies
+RUN pip3 install pika
+RUN pip3 install selenium
+RUN pip3 install requests
+
 ENV DISPLAY :20
 COPY entrypoint.sh /opt/selenium/entrypoint.sh
+
+# Pull repository
+WORKDIR /home
+RUN git clone https://github.com/quentinl-c/network_testing-client.git
+WORKDIR /
 
 EXPOSE 4444
 CMD ["sh", "/opt/selenium/entrypoint.sh"]
