@@ -43,7 +43,7 @@ RUN pip3 install requests
 ENV DISPLAY :20
 
 # Default server address
-ENV SERVER_ADDRESS 127.0.0.1:8080
+ENV SERVER_ADDRESS 127.0.0.1:5000
 
 COPY entrypoint.sh /opt/selenium/entrypoint.sh
 
